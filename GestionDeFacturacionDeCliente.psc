@@ -4,7 +4,7 @@ Proceso GestionDeFacturacionDeCliente
 	Escribir 'Facturacion a cliente';
 	Escribir 'Ingresar nombre del cliente:';
 	Leer nombreCliente;
-	Escribir 'ingresar dirrecion del cliente:';
+	Escribir 'ingresar direccion del cliente:';
 	Leer dirrecionCliente;
 	Escribir 'Ingresar cantidad de producto comprado:';
 	Leer cantidadProducto;
