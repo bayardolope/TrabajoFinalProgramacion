@@ -1,28 +1,33 @@
-#include <iostream>
-#include <string>
-#include <iomanip>
 #include "funciones.h"
-#include <vector>
+#include "variables.h"
+#include <iostream>
+#include <iomanip>
+#include <cstring>
+#include <fstream>
+#include <cstdlib>
+
 using namespace std;
 
-void mostrarMenu()
-{
+void mostrarMenu() {
     cout << "Menú Principal" << endl;
     cout << "1. Gestión de facturación a clientes" << endl;
     cout << "2. Registrar ventas diarias" << endl;
     cout << "3. Consultar inventario" << endl;
     cout << "4. Generar reporte diario" << endl;
+    cout << "5. Mostrar facturas" << endl;
+    cout << "6. Editar factura" << endl;
+    cout << "7. Eliminar factura" << endl;
+    cout << "8. Buscar factura" << endl;
+    cout << "9. Salir" << endl;
     cout << "Seleccione una opción: ";
 }
 
-char realizarOperacion()
-{
+char realizarOperacion() {
     int opcion;
-    double inventarioPollos = 100; // Este es nuestro inventario inicial de pollos al dia.
+    double inventarioPollos = 100; // Este es nuestro inventario inicial de pollos al día.
     cin >> opcion;
 
-    switch (opcion)
-    {
+    switch (opcion) {
     case 1:
         gestionarFacturacion(inventarioPollos);
         break;
@@ -35,6 +40,20 @@ char realizarOperacion()
     case 4:
         generarReporteDiario();
         break;
+    case 5:
+        // Implementar la función mostrarTodo() si está definida
+        break;
+    case 6:
+        // Implementar la función editar() si está definida
+        break;
+    case 7:
+        // Implementar la función eliminar() si está definida
+        break;
+    case 8:
+        // Implementar la función buscarFactura() si está definida
+        break;
+    case 9:
+        return 'N';
     default:
         cout << "Opción no válida, por favor intente de nuevo." << endl;
     }
@@ -45,75 +64,55 @@ char realizarOperacion()
     return continuar;
 }
 
-void gestionarFacturacion(double &inventarioPollos)
-{
-    string nombreCliente, direccionCliente;
-    double cantidadPollos, precioPollo, totalFactura, descuento;
-    char aplicarDescuento;
-
+void gestionarFacturacion(double &inventarioPollos) {
+    FACTURA factura;
     cout << "Ingresar datos del cliente" << endl;
-    cout << "Nombre: ";
+    cout << "ID: ";
+    cin >> factura.id;
+    if (/* Implementar findPos() */ -1) {
+        cout << "Registro ya existe..." << endl;
+        return;
+    }
+    cout << "NOMBRE: ";
     cin.ignore();
-    getline(cin, nombreCliente);
-    cout << "Dirección: ";
-    getline(cin, direccionCliente);
+    cin.getline(factura.name, 30);
+    cout << "DESCRIPCIÓN: ";
+    cin.getline(factura.description, 100);
 
     cout << "Ingresar cantidad de pollos comprados: ";
-    cin >> cantidadPollos;
-    while (cantidadPollos <= 0 || cantidadPollos > inventarioPollos)
-    {
+    cin >> factura.numPollos;
+    while (factura.numPollos <= 0 || factura.numPollos > inventarioPollos) {
         cout << "Cantidad inválida. Ingrese una cantidad positiva y no mayor al inventario disponible (" << inventarioPollos << ")." << endl;
-        cin >> cantidadPollos;
+        cin >> factura.numPollos;
     }
 
     cout << "Ingresar precio por pollo: ";
-    cin >> precioPollo;
-    while (precioPollo <= 0)
-    {
+    cin >> factura.precioPollos;
+    while (factura.precioPollos <= 0) {
         cout << "Precio inválido. Ingrese un precio positivo." << endl;
-        cin >> precioPollo;
+        cin >> factura.precioPollos;
     }
 
-    cout << "¿Desea aplicar un descuento? (S/N): ";
-    cin >> aplicarDescuento;
-    if (aplicarDescuento == 'S' || aplicarDescuento == 's')
-    {
-        cout << "Ingrese el porcentaje de descuento: ";
-        cin >> descuento;
-        while (descuento < 0 || descuento > 100)
-        {
-            cout << "Descuento inválido. Ingrese un porcentaje entre 0 y 100." << endl;
-            cin >> descuento;
-        }
-    }
-    else
-    {
-        descuento = 0;
-    }
+    cout << "Total de la factura: $" << fixed << setprecision(2) << factura.numPollos * factura.precioPollos << endl;
 
-    totalFactura = cantidadPollos * precioPollo * (1 - descuento / 100);
-    cout << fixed << setprecision(2) << "Total de la factura: $" << totalFactura << endl;
-
-    inventarioPollos -= cantidadPollos;
+    inventarioPollos -= factura.numPollos;
+    // Implementar addFactura(&factura) y writeFile(factura)
     cout << "Factura guardada correctamente." << endl;
 }
 
-void registrarVentas(double &inventarioPollos)
-{
+void registrarVentas(double &inventarioPollos) {
     double cantidadVendida, precioPollo, totalVentasDiarias;
 
     cout << "Ingresar cantidad de pollos vendidos hoy: ";
     cin >> cantidadVendida;
-    while (cantidadVendida <= 0 || cantidadVendida > inventarioPollos)
-    {
+    while (cantidadVendida <= 0 || cantidadVendida > inventarioPollos) {
         cout << "Cantidad inválida. Ingrese una cantidad positiva y no mayor al inventario disponible (" << inventarioPollos << ")." << endl;
         cin >> cantidadVendida;
     }
 
     cout << "Ingresar precio por pollo: ";
     cin >> precioPollo;
-    while (precioPollo <= 0)
-    {
+    while (precioPollo <= 0) {
         cout << "Precio inválido. Ingrese un precio positivo." << endl;
         cin >> precioPollo;
     }
@@ -125,32 +124,23 @@ void registrarVentas(double &inventarioPollos)
     cout << "Registro de ventas diarias guardado correctamente." << endl;
 }
 
-void consultarInventario(double inventarioPollos)
-{
+void consultarInventario(double inventarioPollos) {
     cout << "Consultando inventario..." << endl;
 
-    vector<string> nombresPollos = {"Pollo 1", "Pollo 2", "Pollo 3"}; // Ejemplo de nombres de pollos
-    vector<float> cantidadesPollos = {10, 15, 20};                    // Ejemplo de cantidades de pollos
-    vector<double> preciosPollos = {5.0, 6.0, 7.0};                   // Ejemplo de precios de pollos
+    const int numPollos = 3;
+    string nombresPollos[numPollos] = {"Pollo 1", "Pollo 2", "Pollo 3"};
+    int cantidadesPollos[numPollos] = {10, 15, 20};
+    double preciosPollos[numPollos] = {5.0, 6.0, 7.0};
 
-    for (int i = 0; i < nombresPollos.size(); i++)
-    {
-        cout << nombresPollos[i] << ": Cantidad: " << cantidadesPollos[i] << ", Precio: $" << preciosPollos[i] << endl;
-    }
-    const int numPollos = 3;                                             // Number of pollos in the inventory
-    string nombresPollos[numPollos] = {"Pollo 1", "Pollo 2", "Pollo 3"}; // Ejemplo de la lista de pollos 
-    int cantidadesPollos[numPollos] = {10, 15, 20};                      // Ejemplo de cantidades de pollo 
-    double preciosPollos[numPollos] = {5.0, 6.0, 7.0};                   // Ejemplos de precios de pollo
-
-    for (int i = 0; i < numPollos; i++)
-    {
+    for (int i = 0; i < numPollos; i++) {
         cout << nombresPollos[i] << ": Cantidad: " << cantidadesPollos[i] << ", Precio: $" << preciosPollos[i] << endl;
     }
 }
 
-void generarReporteDiario()
-{
+void generarReporteDiario() {
     cout << "Generando reporte diario..." << endl;
     cout << "------------------------------------" << endl;
-    cout << "Reporte diario... aun no terminado..." << endl;
+    cout << "Reporte diario... aún no terminado..." << endl;
 }
+
+// Implementar funciones adicionales como addFactura, findFactura, findPos, etc.
