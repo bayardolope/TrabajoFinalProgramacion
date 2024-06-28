@@ -8,8 +8,8 @@
       "args": [],
       "stopAtEntry": false,
       "externalConsole": true,
-      "cwd": "c:/Users/Usuario/OneDrive/Escritorio/FucionarArchivos",
-      "program": "c:/Users/Usuario/OneDrive/Escritorio/FucionarArchivos/build/Debug/outDebug",
+      "cwd": "c:/Users/Usuario/OneDrive/Escritorio/repuesto",
+      "program": "c:/Users/Usuario/OneDrive/Escritorio/repuesto/build/Debug/outDebug",
       "MIMode": "gdb",
       "miDebuggerPath": "gdb",
       "setupCommands": [

@@ -1,17 +1,11 @@
-#ifndef VARIABLES_H
-#define VARIABLES_H
+#define MAX_REG 1000
+#define MAX_100
 
-struct FACTURA
-{
+typedef struct FACTURA{
     int id;
     char name[30];
     char description[100];
     int numPollos;
-    double precioPollos;
-    double total;
+    int precioPollos;
+    int total;
 };
-
-extern FACTURA facturas[100];
-extern int pos;
-
-#endif
