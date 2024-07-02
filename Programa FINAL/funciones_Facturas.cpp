@@ -6,11 +6,8 @@
 
 using namespace std;
 
-// Separar las funciones de las facturas
-FACTURA facturas[MAX_REG];
-int pos = 0;
 
-// Funciones para proceso de facturacion
+
 
 void addFactura(FACTURA *factura);            // Funcion para agregar una factura
 FACTURA findFactura(int id);                  // Funcion para buscar una factura
@@ -28,8 +25,7 @@ void saveAll();                               // Funcion para guardar todas las 
 int menuFactura();
 void principalFactura();
 
-// En este apartado se implementan las funciones de facturas
-
+// Implementación de las funciones
 void addFactura(FACTURA *factura) // Factura *factura es un puntero a una estructura FACTURA
 {
     facturas[pos] = *factura; // Se asigna la estructura FACTURA a la posicion pos del arreglo facturas
@@ -38,13 +34,15 @@ void addFactura(FACTURA *factura) // Factura *factura es un puntero a una estruc
 
 FACTURA findFactura(int id)
 {
-    FACTURA factura = {}; // Initialize the factura variable with default values
-    for (int i = 0; i < pos; i++)
+    FACTURA factura = {}; // Inicializa la variable factura
+    int i = findPos(id);  // Busca la posicion de la factura con el ID dado
+    if (i != -1)
     {
-        if (facturas[i].id == id) // Si el id de la factura es igual al id que se busca retorna la factura
-        {
-            return facturas[i];
-        }
+        factura = facturas[i]; // Si la factura se encuentra, se asigna a la variable factura
+    }
+    else
+    {
+        cout << "Factura no encontrada." << endl;
     }
     return factura;
 }
@@ -53,48 +51,89 @@ int findPos(int id)
 {
     for (int i = 0; i < pos; i++)
     {
-        if (facturas[i].id == id) // Lo mismo que el anterior pero en ves de retorna la factura retorna la posicion
+        if (facturas[i].id == id)
+        {
             return i;
+        }
     }
     return -1;
 }
 
 void updateFactura(FACTURA *factura, int id)
 {
-    int position = findPos(id);
-    strcpy(facturas[position].cliente, factura->cliente); // Se copia el cliente de la factura a la posicion de la factura
-    facturas[position].cantidad = factura->cantidad;
-    facturas[position].precio = factura->precio;
-    strcpy(facturas[position].fecha, factura->fecha);
+    int i = findPos(id);
+    if (i != -1)
+    {
+        facturas[i] = *factura;
+    }
+    else
+    {
+        cout << "Factura no encontrada." << endl;
+    }
 }
 
 void destroyFactura(int id)
 {
-    int position = findPos(id);
-    for (int i = position; i < pos - 1; i++) // Aqui se recorre el arreglo de facturas
+    int i = findPos(id);
+    if (i != -1)
     {
-        facturas[i] = facturas[i + 1]; // Se asigna la factura siguiente a la factura actual
+        for (int j = i; j < pos - 1; j++)
+        {
+            facturas[j] = facturas[j + 1];
+        }
+        pos--;
     }
-    FACTURA f;             // Se crea una factura vacia
-    facturas[pos - 1] = f; // Se asigna la factura vacia a la ultima posicion
-    pos--;                 // Dando como resultado que la factura se elimina
+    else
+    {
+        cout << "Factura no encontrada." << endl;
+    }
+}
+
+void buscarFactura()
+{
+    int id;
+    cout << "Ingrese el ID de la factura a buscar: ";
+    cin >> id;
+    FACTURA factura = findFactura(id);
+    if (factura.id != 0) // Asegurarse de que la factura existe
+    {
+        showData(factura);
+    }
+}
+
+void showData(FACTURA &factura)
+{
+    cout << "ID: " << factura.id << endl;
+    cout << "Cliente: " << factura.cliente << endl;
+    cout << "Cantidad: " << factura.cantidad << endl;
+    cout << "Precio: " << factura.precio << endl;
+    cout << "Fecha: " << factura.fecha << endl;
+}
+
+void writeFile(const FACTURA &factura)
+{
+    ofstream file("facturas.txt", ios::app);
+    file << factura.id << " "
+         << factura.cliente << " "
+         << factura.cantidad << " "
+         << factura.precio << " "
+         << factura.fecha << endl;
+    file.close();
 }
 
 void pedirDato()
 {
     FACTURA factura;
-    cout << "ID: "; // Se piden los datos de la factura
+    cout << "Ingrese ID: ";
     cin >> factura.id;
-    cout << "Cliente: ";
-    cin.ignore();                     // Se ignora el salto de linea
-    cin.getline(factura.cliente, 30); // Se pide el nombre del cliente
-    cout << "Cantidad: ";
+    cout << "Ingrese cliente: ";
+    cin >> factura.cliente;
+    cout << "Ingrese cantidad: ";
     cin >> factura.cantidad;
-    cout << "Precio: ";
+    cout << "Ingrese precio: ";
     cin >> factura.precio;
-    cout << "Fecha: ";
-    cin.ignore();
-    cin.getline(factura.fecha, 20);
+    cout << "Ingrese fecha: ";
+    cin >> factura.fecha;
     addFactura(&factura);
     writeFile(factura);
 }
@@ -109,67 +148,41 @@ void mostrarTodo()
 
 void editar()
 {
-    FACTURA factura;
     int id;
-    cout << "ID de la factura a editar: ";
+    cout << "Ingrese el ID de la factura a editar: ";
     cin >> id;
-    if (findPos(id) == -1) // Se busxa en base al id de la factura
+    int i = findPos(id);
+    if (i != -1)
     {
-        cout << "Factura no encontrada..." << endl;
-        return;
+        FACTURA factura;
+        cout << "Ingrese nuevo cliente: ";
+        cin >> factura.cliente;
+        cout << "Ingrese nueva cantidad: ";
+        cin >> factura.cantidad;
+        cout << "Ingrese nuevo precio: ";
+        cin >> factura.precio;
+        cout << "Ingrese nueva fecha: ";
+        cin >> factura.fecha;
+        factura.id = id;
+        updateFactura(&factura, id);
     }
-    factura = findFactura(id);
-    cout << "Nuevo Cliente: ";
-    cin.ignore();
-    cin.getline(factura.cliente, 30);
-    cout << "Nueva Cantidad: ";
-    cin >> factura.cantidad;
-    cout << "Nuevo Precio: ";
-    cin >> factura.precio;
-    cout << "Nueva Fecha: ";
-    cin.ignore();
-    cin.getline(factura.fecha, 20);
-
-    updateFactura(&factura, id); // Se actualiza la factura
-    cout << "Factura actualizada correctamente." << endl;
-    saveAll(); // Guardando todo lo editado
+    else
+    {
+        cout << "Factura no encontrada." << endl;
+    }
 }
 
 void eliminar()
 {
     int id;
-    cout << "ID de la factura a eliminar: ";
+    cout << "Ingrese el ID de la factura a eliminar: ";
     cin >> id;
-    destroyFactura(id); // Se llama a la funcion destroyFactura para eliminar la factura
+    destroyFactura(id);
 }
 
-void buscarFactura()
-{
-    int id;
-    cout << "ID de la factura a buscar: ";
-    cin >> id;
-    FACTURA factura = findFactura(id); // Se utiliza el puntero para buscar la factura usando al id de la factura
-    if (factura.id != 0)               // Si la factura es diferente de 0 se muestra
-    {
-        showData(factura);
-    }
-    else
-    {
-        cout << "Factura no encontrada." << endl; // De lo contrario la factura no se encontro
-    }
-}
-
-void showData(FACTURA &factura)
-{
-    cout << "ID: " << factura.id << endl;
-    cout << "Cliente: " << factura.cliente << endl;
-    cout << "Cantidad: " << factura.cantidad << endl;
-    cout << "Precio: " << factura.precio << endl;
-    cout << "Fecha: " << factura.fecha << endl;
-}
 void saveAll()
 {
-    ofstream file("facturas.txt"); // Se abre el archivo facturas.txt
+    ofstream file("facturas.txt");
     for (int i = 0; i < pos; i++)
     {
         file << facturas[i].id << " "
@@ -180,20 +193,6 @@ void saveAll()
     }
     file.close();
 }
-
-void writeFile(const FACTURA &factura)
-{
-    ofstream file("facturas.txt", ios::app);
-    file << factura.id << " "
-         << factura.cliente << " "
-         << factura.cantidad << " "
-         << factura.precio << " "
-         << factura.fecha << endl;
-    file.close();
-}
-
-// Apartado de menu
-
 
 int menuFactura()
 {
