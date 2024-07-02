@@ -1,9 +1,10 @@
 #include <iostream>
-#include "funciones_pollos.cpp"
+#include "variablesExpenses.h"
+#include "funcionesExpenses.cpp"
 
-using namespace std;
+void principalExpenses();
 
-int main(){
-    principal();
+int main() {
+    principalExpenses();
     return 0;
 }

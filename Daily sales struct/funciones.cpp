@@ -95,7 +95,7 @@ int menu() {
     return op;
 }
 
-void principal() {
+void principalVD() {
     loadSales();
     int op;
     do {

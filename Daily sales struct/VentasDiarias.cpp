@@ -4,6 +4,6 @@
 using namespace std;
 
 int main() {
-    principal();
+    principalVD();
     return 0;
 }
