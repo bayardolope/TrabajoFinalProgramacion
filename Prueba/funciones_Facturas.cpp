@@ -7,6 +7,8 @@
 using namespace std;
 
 // Separar las funciones de las facturas
+FACTURA facturas[MAX_REG];
+int pos = 0;
 
 // Funciones para proceso de facturacion
 
@@ -23,6 +25,8 @@ void mostrarTodo();                           // Funcion para mostrar todas las 
 void editar();                                // Funcion para editar una factura
 void eliminar();                              // Funcion para eliminar una factura
 void saveAll();                               // Funcion para guardar todas las facturas
+int menu();
+void principal();
 
 // En este apartado se implementan las funciones de facturas
 
@@ -177,19 +181,32 @@ void saveAll()
     file.close();
 }
 
+void writeFile(const FACTURA &factura)
+{
+    ofstream file("facturas.txt", ios::app);
+    file << factura.id << " "
+         << factura.cliente << " "
+         << factura.cantidad << " "
+         << factura.precio << " "
+         << factura.fecha << endl;
+    file.close();
+}
+
 // Apartado de menu
-int menu();
-void principal();
+
 
 int menu()
 {
     int op;
     cout << "Menu\n";
     cout << "1. Agregar Factura\n";
-    cout << "2. Mostrar Facturas\n";
-    cout << "3. Buscar Factura\n";
-    cout << "4. Editar Factura\n";
-    cout << "5. Eliminar Factura\n";
+    cout << "2. Buscar Factura\n";
+    cout << "3. Editar Factura\n";
+    cout << "4. Eliminar Factura\n";
+    cout << "5. Mostrar Todo\n";
+    cout << "6. Guardar Todo\n";
+    cout << "7. Salir\n";
+    cout << "Opcion: ";
     cin >> op;
     return op;
 }
@@ -206,17 +223,21 @@ void principal()
             pedirDato();
             break;
         case 2:
-            mostrarTodo();
-            break;
-        case 3:
             buscarFactura();
             break;
-        case 4:
+        case 3:
             editar();
             break;
-        case 5:
+        case 4:
             eliminar();
             break;
+        case 5:
+            mostrarTodo();
+            break;
+        case 6:
+            saveAll();
+            break;
         }
-    } while (op != 6);
+    } while (op != 7);
+    saveAll();
 }
