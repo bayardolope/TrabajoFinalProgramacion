@@ -3,7 +3,8 @@
 
 #define MAX_EXPENSES 1000
 
-typedef struct EXPENSE {
+typedef struct EXPENSE
+{
     int id;
     char description[50];
     float amount;

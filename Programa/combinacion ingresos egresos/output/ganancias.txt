@@ -1,5 +1,0 @@
-Reporte de Ventas
-Total de Ventas Realizadas: 0
-Total de Ganancias: C$0
-Reporte de ganancias generales.
---------------------------

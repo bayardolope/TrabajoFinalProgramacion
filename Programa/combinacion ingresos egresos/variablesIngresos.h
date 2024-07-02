@@ -1,6 +1,7 @@
 #define MAX_REG 1000
 
-typedef struct FACTURA {
+typedef struct FACTURA
+{
     int id;
     char cliente[30];
     double cantidad;
