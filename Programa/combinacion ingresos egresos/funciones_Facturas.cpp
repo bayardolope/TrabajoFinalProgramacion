@@ -21,6 +21,7 @@ void eliminar();                              // Funcion para eliminar una factu
 void saveAll();                               // Funcion para guardar todas las facturas
 int menuFactura();
 void principalFactura();
+int loadFile();
 
 // Implementación de las funciones
 void addFactura(FACTURA *factura) // Factura *factura es un puntero a una estructura FACTURA
@@ -121,14 +122,21 @@ void writeFile(const FACTURA &factura)
 void pedirDato()
 {
     FACTURA factura;
-    cout << "Ingrese ID: ";
-    cin >> factura.id;
+    do // Evita que se puedan digitar id negativos, o digitar el mismo id
+    {
+        cout << "El ID no puede ser negativo o repetido." << endl;
+        cout << "Ingrese ID: ";
+        cin >> factura.id;
+    } while (findPos(factura.id) != -1 || factura.id < 0);
     cout << "Ingrese cliente: ";
     cin >> factura.cliente;
-    cout << "Ingrese cantidad: ";
-    cin >> factura.cantidad;
-    cout << "Ingrese precio: ";
-    cin >> factura.precio;
+    do
+    {
+        cout << "Ingrese cantidad: ";
+        cin >> factura.cantidad;
+        cout << "Ingrese precio: ";
+        cin >> factura.precio;
+    } while (factura.cantidad < 0 || factura.precio < 0 || factura.cantidad > 1000 || factura.precio > 1000);
     cout << "Ingrese fecha: ";
     cin >> factura.fecha;
     addFactura(&factura);
@@ -167,6 +175,7 @@ void editar()
     {
         cout << "Factura no encontrada." << endl;
     }
+    saveAll();
 }
 
 void eliminar()
@@ -175,6 +184,7 @@ void eliminar()
     cout << "Ingrese el ID de la factura a eliminar: ";
     cin >> id;
     destroyFactura(id);
+    saveAll();
 }
 
 void saveAll()
@@ -189,6 +199,26 @@ void saveAll()
              << facturas[i].fecha << endl;
     }
     file.close();
+}
+
+int loadFile()
+{
+    ifstream file("facturas.txt");
+    if(file.fail()){
+        return 0;
+    }
+    int i = 0;
+    while (file >> facturas[i].id)
+    {
+        file.ignore();
+        file >> facturas[i].cliente;
+        file >> facturas[i].cantidad;
+        file >> facturas[i].precio;
+        file >> facturas[i].fecha;
+        i++;
+    }
+    file.close();
+    return i;
 }
 
 int menuFactura()
@@ -210,6 +240,7 @@ int menuFactura()
 void principalFactura()
 {
     int op;
+    pos = loadFile();
     do
     {
         op = menuFactura();
